@@ -1,4 +1,4 @@
-package ru.geekbrains.spoonacular;
+package ru.geekbrains.spoonacular.GET;
 
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
@@ -10,12 +10,12 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.*;
 
 
@@ -32,12 +32,28 @@ public class ComplexSearchTests {
     @BeforeAll
     static void beforeAll() throws IOException {
         properties = new Properties();
-        properties.load(new FileInputStream("src/test/resources/application.properties"));
+        properties.load(new FileInputStream("src/test/resources/GET/application.properties"));
         host = properties.getProperty("host");
         API_KEY = properties.getProperty("api-key");
         endpoint = properties.getProperty("endpoint.name");
         RestAssured.baseURI = host;
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+    }
+
+
+    @Test
+    @DisplayName("Negative authorization (no apikey")
+    void complexSearchNotAuthorizedTest(){
+        when().get(endpoint)
+                .then().statusCode(401);
+    }
+
+    @Test
+    @DisplayName("Negative authorization (wrong apikey")
+    void complexSearchWrongApiKeyTest(){
+        given().param("apiKey", API_KEY)
+                .when().get(endpoint)
+                .then().statusCode(401);
     }
 
 
@@ -75,7 +91,7 @@ public class ComplexSearchTests {
 
 
     JsonPath expectedJSON = new JsonPath(FileUtils.readFileToString(
-            new File("src/test/resources/ComplexSearchExpected.json"), StandardCharsets.UTF_8));
+            new File("src/test/resources/GET/ComplexSearchExpected.json"), StandardCharsets.UTF_8));
 
     @Test
     @DisplayName("Response JSON equal to expected from file")
