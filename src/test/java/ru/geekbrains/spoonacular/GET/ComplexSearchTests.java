@@ -1,7 +1,12 @@
 package ru.geekbrains.spoonacular.GET;
 
 import io.restassured.RestAssured;
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.builder.ResponseSpecBuilder;
+import io.restassured.filter.log.LogDetail;
 import io.restassured.path.json.JsonPath;
+import io.restassured.specification.RequestSpecification;
+import io.restassured.specification.ResponseSpecification;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -26,79 +31,84 @@ public class ComplexSearchTests {
     static String API_KEY;
     static String endpoint;
 
+    static RequestSpecification requestSpecification;
+    static ResponseSpecification responseSpecification;
+
     public ComplexSearchTests() throws IOException {
     }
 
     @BeforeAll
     static void beforeAll() throws IOException {
+
         properties = new Properties();
         properties.load(new FileInputStream("src/test/resources/GET/application.properties"));
         host = properties.getProperty("host");
-        API_KEY = properties.getProperty("api-key");
         endpoint = properties.getProperty("endpoint.name");
+        API_KEY = properties.getProperty("apiKey");
+
+        requestSpecification = new RequestSpecBuilder()
+                .setBaseUri(host)
+                .addQueryParam("apiKey", API_KEY)
+                .log(LogDetail.ALL)
+                .build();
+
+        responseSpecification = new ResponseSpecBuilder()
+                .expectResponseTime(lessThan(500L))
+                .expectStatusCode(200)
+                .expectContentType("application/json")
+                .build();
+
         RestAssured.baseURI = host;
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
 
 
+    // Negative auth tests
     @Test
     @DisplayName("Negative authorization (no apikey")
-    void complexSearchNotAuthorizedTest(){
+    void complexSearchNotAuthorizedTest() {
         when().get(endpoint)
                 .then().statusCode(401);
     }
 
     @Test
     @DisplayName("Negative authorization (wrong apikey")
-    void complexSearchWrongApiKeyTest(){
-        given().param("apiKey", API_KEY)
+    void complexSearchWrongApiKeyTest() {
+        given().param("apiKey", "WRONG_API_KEY")
                 .when().get(endpoint)
                 .then().statusCode(401);
     }
 
 
+    // Positive tests
     @Test
-    @DisplayName("Response 200")
+    @DisplayName("response fields all are good ")
     void searchRecipes200ResponseTest() {
-        given().param("apiKey", API_KEY)
+        given().spec(requestSpecification)
                 .when().get(endpoint)
-                .then().statusCode(200);
+                .then().spec(responseSpecification);
     }
 
-    @Test
-    @DisplayName("Response time less than 500ms")
-    void searchRecipesResponseTimeLess500Test() {
-        given().param("apiKey", API_KEY)
-                .when().get(endpoint)
-                .then().time(lessThan(500L));
-    }
-
-    @Test
-    @DisplayName("Response body contains 'Cauliflower' string")
-    void searchRecipesContainsStringTest() {
-        given().param("apiKey", API_KEY)
-                .when().get(endpoint)
-                .then().body(containsString("Cauliflower"));
-    }
 
     @Test
     @DisplayName("Response array size is 10")
     void searchRecipesResultsArraySizeTest() {
-        given().param("apiKey", API_KEY)
+        given().spec(requestSpecification)
                 .when().get(endpoint)
-                .then().assertThat().body("results.size()", is(10));
+                .then().spec(responseSpecification)
+                    .body("results.size()", is(10));
     }
 
 
     JsonPath expectedJSON = new JsonPath(FileUtils.readFileToString(
             new File("src/test/resources/GET/ComplexSearchExpected.json"), StandardCharsets.UTF_8));
-
     @Test
     @DisplayName("Response JSON equal to expected from file")
     void searchRecipesTotalResponseTest() {
-        given().param("apiKey", API_KEY)
+        given().spec(requestSpecification)
                 .when().get(endpoint)
-                .then().body("", equalTo(expectedJSON.getMap("")));
+                .then().spec(responseSpecification)
+                    .body("", equalTo(expectedJSON.getMap("")));
     }
 
 }
