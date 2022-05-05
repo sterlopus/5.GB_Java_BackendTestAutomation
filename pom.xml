@@ -11,21 +11,33 @@
     <properties>
         <maven.compiler.source>16</maven.compiler.source>
         <maven.compiler.target>16</maven.compiler.target>
-        <rest-assured.version>4.5.0</rest-assured.version>
         <junit-jupiter.version>5.8.2</junit-jupiter.version>
         <commons-io.version>2.11.0</commons-io.version>
-        <jackson.version>2.13.1</jackson.version>
+        <jackson.version>2.13.2</jackson.version>
         <lombok.version>1.18.22</lombok.version>
+        <retrofit.version>2.9.0</retrofit.version>
     </properties>
 
     <dependencies>
 
         <dependency>
-            <!-- https://mvnrepository.com/artifact/io.rest-assured/rest-assured -->
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
-            <version>${rest-assured.version}</version>
-            <scope>compile</scope>
+            <version>4.5.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.squareup.retrofit2/retrofit -->
+        <dependency>
+            <groupId>com.squareup.retrofit2</groupId>
+            <artifactId>retrofit</artifactId>
+            <version>${retrofit.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.squareup.retrofit2/converter-gson -->
+        <dependency>
+            <groupId>com.squareup.retrofit2</groupId>
+            <artifactId>converter-jackson</artifactId>
+            <version>${retrofit.version}</version>
         </dependency>
 
         <dependency>
@@ -33,7 +45,6 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>${junit-jupiter.version}</version>
-            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -71,6 +82,13 @@
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
             <scope>provided</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.hamcrest/hamcrest -->
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
+            <version>2.2</version>
         </dependency>
 
     </dependencies>
