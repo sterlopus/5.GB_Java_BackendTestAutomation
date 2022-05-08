@@ -10,16 +10,16 @@ import java.util.List;
 public interface ProductService {
 
     @GET("products")
-    Call<List<Product>> getProducts();  // TODO: or ResponseBody?
+    Call<List<Product>> getProducts();
+
+    @POST("products")
+    Call<Product> createProduct(@Body Product product);
+
+    @PUT("products")
+    Call<Product> editProduct(@Body Product product);
 
     @GET("products/{id}")
     Call<Product> getProduct(@Path("id") int id);
-
-    @POST("products")
-    Call<Product> createNewProduct(@Body Product product);
-
-    @PUT("products/{id}")
-    Call<Product> editProduct(@Path("id") int id, @Body Product product);
 
     @DELETE("products/{id}")
     Call<ResponseBody> deleteProduct(@Path("id") int id);
