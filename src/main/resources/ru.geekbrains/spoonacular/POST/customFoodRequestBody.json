@@ -1,0 +1,12 @@
+{
+  "date": 1589500800,
+  "slot": 1,
+  "position": 0,
+  "type": "CUSTOM_FOOD",
+  "value": {
+    "id": 348,
+    "servings": 1,
+    "title": "Aldi Spicy Cashews - 30g",
+    "image": "https://spoonacular.com/cdn/ingredients_100x100/cashews.jpg"
+  }
+}
