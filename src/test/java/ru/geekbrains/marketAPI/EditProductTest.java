@@ -1,11 +1,15 @@
 package ru.geekbrains.marketAPI;
 
 import lombok.SneakyThrows;
+import org.apache.ibatis.session.SqlSession;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import retrofit2.Response;
+import ru.geekbrains.marketAPI.db.dao.ProductsMapper;
 import ru.geekbrains.marketAPI.dto.Product;
 import ru.geekbrains.marketAPI.services.ProductService;
+import ru.geekbrains.marketAPI.util.MyBatisUtility;
 import ru.geekbrains.marketAPI.util.RetrofitUtility;
 
 import java.io.FileInputStream;
@@ -17,12 +21,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class EditProductTest {
 
-    static ProductService productService;
     static Properties properties = new Properties();
+    static ProductService productService;
+    static SqlSession session;
+    static ProductsMapper mapper;
 
 
     @BeforeAll
     static void beforeAll() {
+
         productService = RetrofitUtility.getRetrofit().create(ProductService.class);
 
         try {
@@ -30,6 +37,9 @@ public class EditProductTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        session = MyBatisUtility.openSqlSession();
+        mapper = session.getMapper(ProductsMapper.class);
 
     }
 
@@ -44,21 +54,31 @@ public class EditProductTest {
 
         Response<Product> response = productService.createProduct(product).execute();
 
+        assert response.body() != null;
+        int id = response.body().getId();
 
         Product editedProduct = new Product()
-                .withId(response.body().getId())
+                .withId(id)
                 .withCategoryTitle(properties.getProperty("categoryTitle"))
                 .withTitle(properties.getProperty("editedTitle"))
                 .withPrice(Integer.parseInt(properties.getProperty("editedPrice")));
 
         Response<Product> editedResponse = productService.editProduct(editedProduct).execute();
 
+        // check by API
         assertThat(editedResponse.isSuccessful(), is(true));
         assertThat(editedResponse.body().getTitle(), is(properties.getProperty("editedTitle")));
         assertThat(editedResponse.body().getPrice(), is(Integer.parseInt(properties.getProperty("editedPrice"))));
 
+        // check by DB
+        assertThat(mapper.selectByPrimaryKey(id).getTitle(), is(properties.getProperty("editedTitle")));
+        assertThat(mapper.selectByPrimaryKey(id).getPrice(), is(Integer.parseInt(properties.getProperty("editedPrice"))));
 
     }
 
+    @AfterAll
+    static void cleanUp() {
+        session.close();
+    }
 
 }

@@ -12,7 +12,7 @@ import ru.geekbrains.marketAPI.util.RetrofitUtility;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class GetCategoryTest {
+public class GetCategoryByIdTest {
 
     static CategoryService categoryService;
 
