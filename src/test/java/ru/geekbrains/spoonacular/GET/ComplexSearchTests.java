@@ -41,7 +41,7 @@ public class ComplexSearchTests {
     static void beforeAll() throws IOException {
 
         properties = new Properties();
-        properties.load(new FileInputStream("src/test/resources/GET/application.properties"));
+        properties.load(new FileInputStream("src/test/java/ru/geekbrains/spoonacular/GET/application.properties"));
         host = properties.getProperty("host");
         endpoint = properties.getProperty("endpoint.name");
         API_KEY = properties.getProperty("apiKey");
@@ -53,7 +53,7 @@ public class ComplexSearchTests {
                 .build();
 
         responseSpecification = new ResponseSpecBuilder()
-                .expectResponseTime(lessThan(500L))
+                .expectResponseTime(lessThan(1000L))
                 .expectStatusCode(200)
                 .expectContentType("application/json")
                 .build();
@@ -101,7 +101,7 @@ public class ComplexSearchTests {
 
 
     JsonPath expectedJSON = new JsonPath(FileUtils.readFileToString(
-            new File("src/test/resources/GET/ComplexSearchExpected.json"), StandardCharsets.UTF_8));
+            new File("src/test/java/ru/geekbrains/spoonacular/GET/ComplexSearchExpected.json"), StandardCharsets.UTF_8));
     @Test
     @DisplayName("Response JSON equal to expected from file")
     void searchRecipesTotalResponseTest() {

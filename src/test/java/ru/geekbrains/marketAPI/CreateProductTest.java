@@ -37,7 +37,7 @@ public class CreateProductTest {
         productService = RetrofitUtility.getRetrofit().create(ProductService.class);
 
         try {
-            properties.load(new FileInputStream("src/test/resources/tests.properties"));
+            properties.load(new FileInputStream("src/test/resources/marketAPI/tests.properties"));
         } catch (IOException e) {
             e.printStackTrace();
         }

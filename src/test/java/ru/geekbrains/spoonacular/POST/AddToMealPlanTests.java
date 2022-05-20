@@ -40,7 +40,7 @@ public class AddToMealPlanTests {
     @BeforeAll
     static void beforeAll() throws IOException {
         properties = new Properties();
-        properties.load(new FileInputStream("src/test/resources/POST/application.properties"));
+        properties.load(new FileInputStream("src/test/java/ru/geekbrains/spoonacular/POST/application.properties"));
         API_KEY = properties.getProperty("apiKey");
         hash = properties.getProperty("hash");
         host = properties.getProperty("host");
@@ -60,7 +60,7 @@ public class AddToMealPlanTests {
                 .expectContentType("application/json")
                 .expectHeader("Connection", "keep-alive")
                 .expectStatusLine("HTTP/1.1 200 OK")
-                .expectResponseTime(lessThan(500L))
+                .expectResponseTime(lessThan(1000L))
                 .expectStatusCode(200)
                 .build();
 
@@ -102,11 +102,11 @@ public class AddToMealPlanTests {
     // Positive POST tests
     @ParameterizedTest
     @ValueSource ( strings = {
-            "src/test/resources/POST/recipeRequestBody.json",
-            "src/test/resources/POST/ingredientRequestBody.json",
-            "src/test/resources/POST/ingredientRequestBodyWrongSlot.json",
-            "src/test/resources/POST/menuitemRequestBody.json",
-            "src/test/resources/POST/customFoodRequestBody.json"
+            "src/test/resources/spoonacular/recipeRequestBody.json",
+            "src/test/resources/spoonacular/ingredientRequestBody.json",
+            "src/test/resources/spoonacular/ingredientRequestBodyWrongSlot.json",
+            "src/test/resources/spoonacular/menuitemRequestBody.json",
+            "src/test/resources/spoonacular/customFoodRequestBody.json"
     })
     void addFoodTypeToMealPlanTest(String str) {
         requestBody = new File(str);
