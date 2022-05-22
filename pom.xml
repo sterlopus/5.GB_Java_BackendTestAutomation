@@ -13,17 +13,20 @@
         <maven.compiler.target>9</maven.compiler.target>
         <junit-jupiter.version>5.8.2</junit-jupiter.version>
         <commons-io.version>2.11.0</commons-io.version>
-        <jackson.version>2.13.2</jackson.version>
-        <lombok.version>1.18.22</lombok.version>
+        <jackson.version>2.13.3</jackson.version>
+        <lombok.version>1.18.24</lombok.version>
         <retrofit.version>2.9.0</retrofit.version>
+        <rest-aasured.version>5.0.1</rest-aasured.version>
+        <slf4j.version>1.7.36</slf4j.version>
     </properties>
 
     <dependencies>
 
+        <!-- https://mvnrepository.com/artifact/io.rest-assured/rest-assured -->
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
-            <version>4.5.0</version>
+            <version>${rest-aasured.version}</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.squareup.retrofit2/retrofit -->
@@ -115,7 +118,22 @@
 
 
 
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-simple -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
     </dependencies>
+
+
 
     <build>
         <plugins>
